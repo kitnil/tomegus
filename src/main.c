@@ -9,12 +9,14 @@ void render_screen (SDL_Renderer *renderer, SDL_Texture *screen)
 {
   uint32_t *pixels = calloc (SCREEN_WIDTH * SCREEN_HEIGHT, sizeof (uint32_t));
 
-  /* TODO: Segmentation fault. */
-  /* SDL_UpdateTexture (screen, NULL, pixels, SCREEN_WIDTH * sizeof (uint32_t)); */
+  if (screen) SDL_DestroyTexture (screen);
 
+  SDL_UpdateTexture (screen, NULL, pixels, SCREEN_WIDTH * sizeof (uint32_t));
   SDL_RenderClear (renderer);
   SDL_RenderCopy (renderer, screen, NULL, NULL);
   SDL_RenderPresent (renderer);
+
+  if (pixels) free (pixels);
 }
 
 int
@@ -61,7 +63,7 @@ main ()
 
   SDL_DestroyRenderer (renderer);
   SDL_DestroyWindow (window);
-  SDL_Quit ();
+  atexit(SDL_Quit);
 
   return 0;
 }

@@ -1,0 +1,6 @@
+- Day 1
+
+  For GNU/Linux add
+  : if (screen) SDL_DestroyTexture (screen);
+  at the beginning of =render_screen ()= to avoid segmentation fault
+  in =SDL_UpdateTexture ()=.
