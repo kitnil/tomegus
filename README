@@ -1,0 +1,2 @@
+guix environment --pure --load=guix.scm -- ./configure LIBS="-lm"
+guix environment --pure --load=guix.scm -- make
