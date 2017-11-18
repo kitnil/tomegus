@@ -1,5 +1,5 @@
 bin_PROGRAMS = tomegus
 tomegus_SOURCES = main.c pt_console.c
 tomegus_CPPFLAGS = @SDL_CFLAGS@
-tomegus_LDFLAGS = @SDL_LIBS@ -v -da -Q -g -O0 -Wall -ggdb -v
+tomegus_LDFLAGS = @SDL_LIBS@
 ACLOCAL_AMFLAGS = --install -I m4

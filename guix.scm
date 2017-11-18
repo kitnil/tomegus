@@ -79,8 +79,8 @@
      ("automake" ,automake)
      ("pkg-config" ,pkg-config)))
   (inputs
-   `(("sdl", sdl2-zeroptimization)
-     ("sdl-image" ,sdl2-image-zeroptimization)
+   `(("sdl", sdl2)
+     ("sdl-image" ,sdl2-image)
      ("stb" ,stb)))
   (synopsis "Rogue like game")
   (description "Rogue like game.")

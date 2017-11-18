@@ -67,7 +67,7 @@ void PT_ConsoleSetBitmapFont (PT_Console * con, char *filename,
                               ascii_char firstCharInAtlas,
                               int charWidth, int charHeight);
 
-void PT_ConsolePutCharAt (PT_Console * con, ascii_char c,
+void PT_ConsolePutCharAt (PT_Console * console, unsigned char c,
                           int32_t cellX, int32_t cellY, uint32_t fgColor,
                           uint32_t bgColor);
 
@@ -78,7 +78,7 @@ uint32_t PT_ColorizePixel (uint32_t dest, uint32_t src);
 void PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
                    uint32_t destPixelsPerRow, uint32_t * srcPixels,
                    PT_Rect * srcRect, uint32_t srcPixelsPerRow,
-                   uint32_t * newColor);
+                   uint32_t newColor);
 
 void PT_Fill (uint32_t * pixels, uint32_t pixelsPerRow,
               PT_Rect * destRect, uint32_t color);

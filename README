@@ -1,2 +1,10 @@
-guix environment --pure --load=guix.scm -- ./configure LIBS="-lm"
-guix environment --pure --load=guix.scm -- make
+* Development environment
+
+  autoreconf -vfi
+
+#+BEGIN_SRC shell
+  guix environment --pure --load=guix.scm -- ./configure LIBS="-lm"
+  guix environment --pure --load=guix.scm -- make
+#+END_SRC
+
+set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include

@@ -53,8 +53,8 @@ main ()
   SDL_Texture *screen = SDL_CreateTexture (renderer,
                                            SDL_PIXELFORMAT_RGBA8888,
                                            SDL_TEXTUREACCESS_STREAMING,
-                                           SCREEN_HEIGHT,
-                                           SCREEN_WIDTH);
+                                           SCREEN_WIDTH,
+                                           SCREEN_HEIGHT);
   PT_Console *console = PT_ConsoleInit (SCREEN_WIDTH,
                                         SCREEN_HEIGHT,
                                         NUM_ROWS,

@@ -46,7 +46,6 @@ PT_ConsolePutCharAt (PT_Console * console, unsigned char c,
                      int32_t cellX, int32_t cellY, uint32_t fgColor,
                      uint32_t bgColor)
 {
-
   int32_t x = cellX * console->cellWidth;
   int32_t y = cellY * console->cellHeight;
   PT_Rect destRect = {x, y, console->cellWidth, console->cellHeight};
@@ -58,7 +57,7 @@ PT_ConsolePutCharAt (PT_Console * console, unsigned char c,
   PT_Rect srcRect = PT_RectForGlyph (c, console->font);
   PT_CopyBlend (console->pixels, &destRect, console->width,
                 console->font->atlas, &srcRect, console->font->atlasWidth,
-                &fgColor);
+                fgColor);
 }
 
 void
@@ -127,7 +126,7 @@ void
 PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
               uint32_t destPixelsPerRow, uint32_t * srcPixels,
               PT_Rect * srcRect, uint32_t srcPixelsPerRow,
-              uint32_t * newColor)
+              uint32_t newColor)
 {
   // If src and dest rects are not the same size ==> bad things
   assert (destRect->w == srcRect->w && destRect->h == srcRect->h);
@@ -151,7 +150,7 @@ PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
           uint32_t destColor = *destPixel;
 
           // Colorize our source pixel before we blend it
-          srcColor = PT_ColorizePixel (srcColor, *newColor);
+          srcColor = PT_ColorizePixel (srcColor, newColor);
 
           if (ALPHA (srcColor) == 0)
             {
