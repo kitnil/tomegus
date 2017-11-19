@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_ONLY_PNG
 #include <stb/stb_image.h>
 
 #include "pt_console.h"
@@ -15,10 +16,10 @@
 /* Console Function Implementation */
 
 void
-PT_ConsoleClear (PT_Console * con)
+PT_ConsoleClear (PT_Console * console)
 {
-  PT_Rect r = { 0, 0, con->width, con->height };
-  PT_Fill (con->pixels, con->width, &r, 0x000000ff);
+  PT_Rect r = { 0, 0, console->width, console->height };
+  PT_Fill (console->pixels, console->width, &r, 0x00000ff);
 }
 
 PT_Console
@@ -57,11 +58,11 @@ PT_ConsolePutCharAt (PT_Console * console, unsigned char c,
   PT_Rect srcRect = PT_RectForGlyph (c, console->font);
   PT_CopyBlend (console->pixels, &destRect, console->width,
                 console->font->atlas, &srcRect, console->font->atlasWidth,
-                fgColor);
+                &fgColor);
 }
 
 void
-PT_ConsoleSetBitmapFont (PT_Console * con, char *filename,
+PT_ConsoleSetBitmapFont (PT_Console * console, char *filename,
                          unsigned char firstCharInAtlas,
                          int charWidth, int charHeight)
 {
@@ -88,12 +89,12 @@ PT_ConsoleSetBitmapFont (PT_Console * con, char *filename,
 
   stbi_image_free (imgData);
 
-  if (con->font != NULL)
+  if (console->font != NULL)
     {
-      free (con->font->atlas);
-      free (con->font);
+      free (console->font->atlas);
+      free (console->font);
     }
-  con->font = font;
+  console->font = font;
 }
 
 
@@ -126,7 +127,7 @@ void
 PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
               uint32_t destPixelsPerRow, uint32_t * srcPixels,
               PT_Rect * srcRect, uint32_t srcPixelsPerRow,
-              uint32_t newColor)
+              uint32_t * newColor)
 {
   // If src and dest rects are not the same size ==> bad things
   assert (destRect->w == srcRect->w && destRect->h == srcRect->h);
@@ -150,7 +151,7 @@ PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
           uint32_t destColor = *destPixel;
 
           // Colorize our source pixel before we blend it
-          srcColor = PT_ColorizePixel (srcColor, newColor);
+          srcColor = PT_ColorizePixel (srcColor, *newColor);
 
           if (ALPHA (srcColor) == 0)
             {
@@ -188,23 +189,21 @@ PT_CopyBlend (uint32_t * destPixels, PT_Rect * destRect,
 }
 
 void
-PT_Fill (uint32_t * pixels, uint32_t pixelsPerRow, PT_Rect * destRect,
-         uint32_t color)
+PT_Fill (uint32_t * pixels, uint32_t pixels_per_row,
+         PT_Rect * dest_rect, uint32_t color)
 {
-  uint32_t stopX = destRect->x + destRect->w;
-  uint32_t stopY = destRect->y + destRect->h;
+  uint32_t stop_x = dest_rect->x + dest_rect->w;
+  uint32_t stop_y = dest_rect->y + dest_rect->h;
 
-  for (uint32_t dstY = destRect->y; dstY < stopY; dstY++)
-    {
-      for (uint32_t dstX = destRect->x; dstX < stopX; dstX++)
-        {
-          pixels[(dstY * pixelsPerRow) + dstX] = color;
-        }
-    }
+  for   (uint32_t dst_y = dest_rect->y; dst_y < stop_y; dst_y++)
+    for (uint32_t dst_x = dest_rect->x; dst_x < stop_x; dst_x++)
+      pixels [(dst_y * pixels_per_row) + dst_x] = color;
 }
 
 void
-PT_FillBlend (uint32_t * pixels, uint32_t pixelsPerRow, PT_Rect * destRect,
+PT_FillBlend (uint32_t * pixels,
+              uint32_t pixelsPerRow,
+              PT_Rect * destRect,
               uint32_t color)
 {
   // For each pixel in the destination rect, alpha blend the

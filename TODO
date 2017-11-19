@@ -1,0 +1,124 @@
+-*- mode: org; coding: utf-8; -*-
+* 
+
+  (gdb) p destRect->w
+  $30 = 12
+  (gdb) p srcRect->w
+  $31 = 16
+  (gdb) p destRect->h
+  $32 = 17
+  (gdb) p srcRect->h
+  $33 = 16
+  
+* 
+
+  Starting program: /home/natsu/src/tomegus/src/tomegus 
+  [Switching to thread 1 (process 31529)](running)
+  [Thread debugging using libthread_db enabled]
+  Using host libthread_db library "/gnu/store/3h31zsqxjjg52da5gp3qmhkh4x8klhah-glibc-2.25/lib/libthread_db.so.1".
+  
+  Breakpoint 20, PT_ConsolePutCharAt (console=0x256b2a0, c=64 '@', cellX=10, cellY=10, fgColor=4294967295, bgColor=255) at pt_console.c:58
+  58	  PT_CopyBlend (console->pixels, &destRect, console->width,
+  (gdb) info locals
+  x = 120
+  y = 170
+  destRect = {x = 120, y = 170, w = 12, h = 17}
+  srcRect = {x = 0, y = 16, w = 16, h = 16}
+  Breakpoint 21 at 0x419a64: file pt_console.c, line 269.
+
+** 
+
+   destRect is in [[file:src/pt_console.c::*PT_ConsoleInit%20(int32_t%20width,%20int32_t%20height,%20int32_t%20rowCount,][console init]]
+
+*** 
+    *PT_ConsoleInit args:
+    - width = 1024
+    - height = 768
+    - rowCount = 45
+    - colCount = 80
+
+*** Room 12x17
+
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    ◼◼◼◼◼◼◼◼◼◼◼◼
+    
+    
+*** Map
+
+    main() <int main () at src/main.c:32>:
+    SDL_Init()
+    SDL_Log()
+    SDL_GetError()
+    SDL_CreateWindow()
+    SDL_CreateRenderer()
+    SDL_SetHint()
+    SDL_RenderSetLogicalSize()
+    SDL_CreateTexture()
+    PT_ConsoleInit() <PT_Console *PT_ConsoleInit () at src/pt_console.c:26>:
+        malloc()
+        calloc()
+    PT_ConsoleSetBitmapFont() <void PT_ConsoleSetBitmapFont () at src/pt_console.c:65>:
+        stbi_load()
+        malloc()
+        memcpy()
+        stbi_image_free()
+        free()
+    SDL_PollEvent()
+    render_screen() <void render_screen () at src/main.c:13>:
+        PT_ConsoleClear() <void PT_ConsoleClear () at src/pt_console.c:19>:
+            PT_Fill() <void PT_Fill () at src/pt_console.c:192>:
+        PT_ConsolePutCharAt() <void PT_ConsolePutCharAt () at src/pt_console.c:46>:
+            PT_FillBlend() <void PT_FillBlend () at src/pt_console.c:208>:
+                ALPHA()
+                RED()
+                GREEN()
+                BLUE()
+                COLOR_FROM_RGBA()
+            PT_RectForGlyph() <PT_Rect PT_RectForGlyph () at src/pt_console.c:263>:
+            PT_CopyBlend() <void PT_CopyBlend () at src/pt_console.c:127>:
+                assert()
+                PT_ColorizePixel() <inline uint32_t PT_ColorizePixel () at src/pt_console.c:104>:
+                    ALPHA()
+                    COLOR_FROM_RGBA()
+                    RED()
+                    GREEN()
+                    BLUE()
+                ALPHA()
+                RED()
+                GREEN()
+                BLUE()
+                COLOR_FROM_RGBA()
+        SDL_DestroyTexture()
+        SDL_UpdateTexture()
+        SDL_RenderClear()
+        SDL_RenderCopy()
+        SDL_RenderPresent()
+        free()
+    SDL_DestroyRenderer()
+    SDL_DestroyWindow()
+    atexit()
+
+*** Console
+
+    (PT_Font *) 0x25e8820
+    (gdb) p *console->font
+    $43 = {atlas = 0x2d76e30, atlasWidth = 256, atlasHeight = 256, charWidth = 16, charHeight = 16, firstCharInAtlas = 48 '0'}
+    (gdb) p *console
+    $44 = {pixels = 0x2976460, width = 1280, height = 720, rowCount = 45, colCount = 80, cellWidth = 16, cellHeight = 16, font = 0x25e8820, cells = 0x2cfa470}
+    (gdb) p *console->cells
+    $45 = {glyph = 0 '\000', fgColor = 0, bgColor = 0}
+(gdb) 

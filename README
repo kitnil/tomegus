@@ -8,3 +8,14 @@
 #+END_SRC
 
 set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include
+./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"
+
+#+BEGIN_SRC emacs-lisp
+  (local-set-key "<f5>" #'wi-compile)
+
+  (defun wi-compile ()
+    (interactive)
+    (switch-to-buffer "*gud*")
+    (insert "make")
+    (comint-send-input))
+#+END_SRC
