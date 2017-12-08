@@ -108,6 +108,9 @@ main ()
                   if (player.position_x < NUM_COLS - 1)
                     player.position_x += 1;
                   break;
+                case SDLK_ESCAPE:
+                  gameover = true;
+                  break;
                 default:
                   break;
                 }
