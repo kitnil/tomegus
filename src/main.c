@@ -92,17 +92,21 @@ main ()
               SDL_Keycode key = event.key.keysym.sym;
               switch (key)
                 {
-                case SDLK_LEFT:
-                  player.position_x -= 1;
+                case SDLK_UP:
+                  if (player.position_y > 0)
+                    player.position_y -= 1;
                   break;
                 case SDLK_DOWN:
-                  player.position_y += 1;
+                  if (player.position_y < NUM_ROWS - 1)
+                    player.position_y += 1;
                   break;
-                case SDLK_UP:
-                  player.position_y -= 1;
+                case SDLK_LEFT:
+                  if (player.position_x > 0)
+                    player.position_x -= 1;
                   break;
                 case SDLK_RIGHT:
-                  player.position_x += 1;
+                  if (player.position_x < NUM_COLS - 1)
+                    player.position_x += 1;
                   break;
                 default:
                   break;
