@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
+#include "main.h"
 #include "pt_console.h"
 
 #define SCREEN_WIDTH 1280
@@ -13,10 +14,12 @@
 #define NUM_ROWS 45
 
 void
-render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
+render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console,
+               player player)
 {
   PT_ConsoleClear (console);
-  PT_ConsolePutCharAt (console, '@', 10, 10, 0xffffffff, 0x000000ff);
+  PT_ConsolePutCharAt (console, '@', player.position_x, player.position_y,
+                       0xffffffff, 0x000000ff);
 
   SDL_UpdateTexture (screen, NULL, console->pixels,
                      SCREEN_WIDTH * sizeof (uint32_t));
@@ -68,6 +71,10 @@ main ()
 
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
 
+  player player;
+  player.position_x = 25;
+  player.position_y = 25;
+
   /* Main loop. */
   while (!gameover)
     {
@@ -80,9 +87,30 @@ main ()
               gameover = true;
               break;
             }
+          if (event.type == SDL_KEYDOWN)
+            {
+              SDL_Keycode key = event.key.keysym.sym;
+              switch (key)
+                {
+                case SDLK_LEFT:
+                  player.position_x -= 1;
+                  break;
+                case SDLK_DOWN:
+                  player.position_y += 1;
+                  break;
+                case SDLK_UP:
+                  player.position_y -= 1;
+                  break;
+                case SDLK_RIGHT:
+                  player.position_x += 1;
+                  break;
+                default:
+                  break;
+                }
+            }
         }
 
-      render_screen (renderer, screen, console);
+      render_screen (renderer, screen, console, player);
     }
 
   /* Clean up. */
