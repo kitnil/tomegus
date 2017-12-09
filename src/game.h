@@ -43,10 +43,13 @@ typedef struct
   bool block_sight;
 } physical;
 
-game_object *add_component_to_game_object (game_object *object,
-                                           game_component *component,
-                                           void *component_data);
+game_object *create_game_object ();
 
+void add_component_to_game_object (game_object *object,
+                                   game_component component,
+                                   void *component_data);
 
+void *get_component_for_game_object (game_object *object,
+                                     game_component component);
 
 #endif

@@ -1,5 +1,3 @@
-/* Some code from: http://www.willusher.io/sdl2%20tutorials/2013/08/17/lesson-2-dont-put-everything-in-main */
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
@@ -15,7 +13,7 @@
 
 void
 render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console,
-               game_object player)
+               game_object *player)
 {
   PT_ConsoleClear (console);
   position *player_position = (position *) get_component_for_game_object
@@ -74,8 +72,8 @@ main ()
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
 
   game_object *player = create_game_object ();
-  position player_position = (player->id, 25, 25);
-  add_component_to_game_object (player, COMPONENT_POSITION, player_position);
+  position player_position = {player->id, 25, 25};
+  add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
 
   /* Main loop. */
   while (!gameover)
@@ -92,23 +90,25 @@ main ()
           if (event.type == SDL_KEYDOWN)
             {
               SDL_Keycode key = event.key.keysym.sym;
+              position *player_position = (position *)
+                get_component_for_game_object (player, COMPONENT_POSITION);
               switch (key)
                 {
                 case SDLK_UP:
-                  if (player.position_y > 0)
-                    player.position_y -= 1;
+                  if (player_position->y > 0)
+                    player_position->y -= 1;
                   break;
                 case SDLK_DOWN:
-                  if (player.position_y < NUM_ROWS - 1)
-                    player.position_y += 1;
+                  if (player_position->y < NUM_ROWS - 1)
+                    player_position->y += 1;
                   break;
                 case SDLK_LEFT:
-                  if (player.position_x > 0)
-                    player.position_x -= 1;
+                  if (player_position->x > 0)
+                    player_position->x -= 1;
                   break;
                 case SDLK_RIGHT:
-                  if (player.position_x < NUM_COLS - 1)
-                    player.position_x += 1;
+                  if (player_position->x < NUM_COLS - 1)
+                    player_position->x += 1;
                   break;
                 case SDLK_ESCAPE:
                   gameover = true;
