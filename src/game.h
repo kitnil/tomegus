@@ -52,4 +52,8 @@ void add_component_to_game_object (game_object *object,
 void *get_component_for_game_object (game_object *object,
                                      game_component component);
 
+visibility visibility_components[MAX_GO];
+position position_components[MAX_GO];
+game_object game_objects[MAX_GO];
+
 #endif

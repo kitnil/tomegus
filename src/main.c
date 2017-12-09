@@ -12,14 +12,21 @@
 #define NUM_ROWS 45
 
 void
-render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console,
-               game_object *player)
+render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
 {
   PT_ConsoleClear (console);
-  position *player_position = (position *) get_component_for_game_object
-    (player, COMPONENT_POSITION);
-  PT_ConsolePutCharAt (console, '@', player_position->x, player_position->y,
-                       0xffffffff, 0x000000ff);
+
+  for (uint32_t i = 1; i < MAX_GO; i++)
+    if (visibility_components[i].object_id > 0)
+      {
+        position *object_position = (position *)
+          get_component_for_game_object (&game_objects[i], COMPONENT_POSITION);
+
+        PT_ConsolePutCharAt (console, visibility_components[i].glyph,
+                             object_position->x, object_position->y,
+                             visibility_components[i].foreground_color,
+                             visibility_components[i].background_color);
+      }
 
   SDL_UpdateTexture (screen, NULL, console->pixels,
                      SCREEN_WIDTH * sizeof (uint32_t));
@@ -74,6 +81,14 @@ main ()
   game_object *player = create_game_object ();
   position player_position = {player->id, 25, 25};
   add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
+  visibility player_visibility = {player->id, '@', 0x00ff00ff, 0x000000ff};
+  add_component_to_game_object (player, COMPONENT_VISIBILITY, &player_visibility);
+
+  game_object *wall = create_game_object ();
+  position wall_position = {wall->id, 30, 25};
+  add_component_to_game_object (wall, COMPONENT_POSITION, &wall_position);
+  visibility wall_visibility = {wall->id, '#', 0xffffffff, 0x000000ff};
+  add_component_to_game_object (wall, COMPONENT_VISIBILITY, &wall_visibility);
 
   /* Main loop. */
   while (!gameover)
@@ -119,7 +134,7 @@ main ()
             }
         }
 
-      render_screen (renderer, screen, console, player);
+      render_screen (renderer, screen, console);
     }
 
   /* Clean up. */
