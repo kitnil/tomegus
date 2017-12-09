@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 
 #include "main.h"
+#include "game.h"
 #include "pt_console.h"
 
 #define SCREEN_WIDTH 1280

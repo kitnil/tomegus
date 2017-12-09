@@ -122,3 +122,8 @@
     (gdb) p *console->cells
     $45 = {glyph = 0 '\000', fgColor = 0, bgColor = 0}
 (gdb) 
+
+* 
+
+  - [ ] Repsent level
+    - Entity component system
