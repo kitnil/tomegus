@@ -12,7 +12,7 @@ create_game_object ()
 {
  game_object *go = NULL;
 
-  for (uint32_t i = 0; i < MAX_GO; i++)
+  for (uint32_t i = 1; i < MAX_GO; i++)
     if (game_objects[i].id == 0)
       {
         go = &game_objects[i];
@@ -47,8 +47,7 @@ add_component_to_game_object (game_object *object,
     }
   else if (component == COMPONENT_VISIBILITY)
     {
-      visibility *visibility_component =
-        &visibility_components[object->id];
+      visibility *visibility_component = &visibility_components[object->id];
       visibility *visibility_data = (visibility *) component_data;
       visibility_component->object_id = object->id;
       visibility_component->glyph = visibility_data->glyph;

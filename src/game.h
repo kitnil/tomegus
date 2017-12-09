@@ -32,8 +32,8 @@ typedef struct
 {
   uint32_t object_id;
   unsigned char glyph;
-  uint32_t background_color;
   uint32_t foreground_color;
+  uint32_t background_color;
 } visibility;
 
 typedef struct

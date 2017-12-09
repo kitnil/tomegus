@@ -19,7 +19,7 @@ void
 PT_ConsoleClear (PT_Console * console)
 {
   PT_Rect r = { 0, 0, console->width, console->height };
-  PT_Fill (console->pixels, console->width, &r, 0x00000ff);
+  PT_Fill (console->pixels, console->width, &r, 0x696969ff);
 }
 
 PT_Console
