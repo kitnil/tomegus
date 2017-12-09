@@ -13,12 +13,14 @@ typedef enum
   COMPONENT_COUNT
 } game_component;
 
+/* Entity. */
 typedef struct
 {
   uint32_t id;
-  void *components[MAX_COMPONENT_COUNT];
+  void *components[COMPONENT_COUNT];
 } game_object;
 
+/* Component definitions. */
 typedef struct
 {
   uint32_t object_id;
