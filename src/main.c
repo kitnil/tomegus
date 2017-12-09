@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-#include "main.h"
 #include "game.h"
 #include "pt_console.h"
 
@@ -16,10 +15,12 @@
 
 void
 render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console,
-               player player)
+               game_object player)
 {
   PT_ConsoleClear (console);
-  PT_ConsolePutCharAt (console, '@', player.position_x, player.position_y,
+  position *player_position = (position *) get_component_for_game_object
+    (player, COMPONENT_POSITION);
+  PT_ConsolePutCharAt (console, '@', player_position->x, player_position->y,
                        0xffffffff, 0x000000ff);
 
   SDL_UpdateTexture (screen, NULL, console->pixels,
@@ -72,9 +73,9 @@ main ()
 
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
 
-  player player;
-  player.position_x = 25;
-  player.position_y = 25;
+  game_object *player = create_game_object ();
+  position player_position = (player->id, 25, 25);
+  add_component_to_game_object (player, COMPONENT_POSITION, player_position);
 
   /* Main loop. */
   while (!gameover)
