@@ -2,6 +2,7 @@
 #define GAME_H
 
 #define MAX_COMPONENT_COUNT 100
+#define MAX_GO 1000
 
 typedef enum
 {
@@ -41,5 +42,11 @@ typedef struct
   bool block_movement;
   bool block_sight;
 } physical;
+
+game_object *add_component_to_game_object (game_object *object,
+                                           game_component *component,
+                                           void *component_data);
+
+
 
 #endif
