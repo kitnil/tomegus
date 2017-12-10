@@ -7,13 +7,25 @@
 
 #include "game.h"
 
+void
+init_world ()
+{
+  for (uint32_t i = 0; i < MAX_GO; i++)
+    {
+      game_objects[i].id = UNUSED;
+      position_components[i].object_id = UNUSED;
+      visibility_components[i].object_id = UNUSED;
+      physical_components[i].object_id = UNUSED;
+    }
+}
+
 game_object *
 create_game_object ()
 {
  game_object *go = NULL;
 
-  for (uint32_t i = 1; i < MAX_GO; i++)
-    if (game_objects[i].id == 0)
+  for (uint32_t i = 0; i < MAX_GO; i++)
+    if (game_objects[i].id == UNUSED)
       {
         go = &game_objects[i];
         go->id = i;
@@ -34,7 +46,7 @@ add_component_to_game_object (game_object *object,
                               game_component component,
                               void *component_data)
 {
-  assert (object->id != -1);
+  assert (object->id != UNUSED);
 
   if (component == COMPONENT_POSITION)
     {
@@ -72,10 +84,10 @@ add_component_to_game_object (game_object *object,
 void
 destroy_game_object (game_object *object)
 {
-  position_components[object->id].object_id = 0;
-  visibility_components[object->id].object_id = 0;
-  physical_components[object->id].object_id = 0;
-  object->id = 0;
+  position_components[object->id].object_id = UNUSED;
+  visibility_components[object->id].object_id = UNUSED;
+  physical_components[object->id].object_id = UNUSED;
+  object->id = UNUSED;
 }
 
 void *

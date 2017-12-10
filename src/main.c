@@ -16,8 +16,8 @@ render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
 {
   PT_ConsoleClear (console);
 
-  for (uint32_t i = 1; i < MAX_GO; i++)
-    if (visibility_components[i].object_id > 0)
+  for (uint32_t i = 0; i < MAX_GO; i++)
+    if (visibility_components[i].object_id != UNUSED)
       {
         position *object_position = (position *)
           get_component_for_game_object (&game_objects[i], COMPONENT_POSITION);
@@ -43,10 +43,10 @@ can_move (position next_position)
   if ((next_position.x >= 0)
       && (next_position.x < NUM_COLS)
       && (next_position.y < NUM_ROWS))
-    for (uint32_t i = 1; i < MAX_GO; i++)
+    for (uint32_t i = 0; i < MAX_GO; i++)
       {
         position new_position = position_components[i];
-        if ((new_position.object_id > 0)
+        if ((new_position.object_id != UNUSED)
             && (new_position.x == next_position.x)
             && (new_position.y == next_position.y))
           if (physical_components[i].block_movement == true)
@@ -99,6 +99,8 @@ main ()
   if (console == NULL) printf ("Initialize console failed. \n");
 
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
+
+  init_world ();
 
   game_object *wall = create_game_object ();
   position wall_position = {wall->id, 30, 25};

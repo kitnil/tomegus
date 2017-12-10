@@ -3,6 +3,7 @@
 
 #define MAX_COMPONENT_COUNT 100
 #define MAX_GO 1000
+#define UNUSED 1000
 
 typedef enum
 {
@@ -56,5 +57,7 @@ visibility visibility_components[MAX_GO];
 position position_components[MAX_GO];
 game_object game_objects[MAX_GO];
 physical physical_components[MAX_GO];
+
+void init_world ();
 
 #endif
