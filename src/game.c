@@ -39,11 +39,11 @@ add_component_to_game_object (game_object *object,
   if (component == COMPONENT_POSITION)
     {
       position *position_component = &position_components[object->id];
-      position *position_data = component_data;
+      position *position_data = (position *) component_data;
       position_component->object_id = object->id;
       position_component->x = position_data->x;
       position_component->y = position_data->y;
-      object->components[component] = &position_component;
+      object->components[component] = position_component;
     }
   else if (component == COMPONENT_VISIBILITY)
     {
@@ -53,7 +53,7 @@ add_component_to_game_object (game_object *object,
       visibility_component->glyph = visibility_data->glyph;
       visibility_component->foreground_color = visibility_data->foreground_color;
       visibility_component->background_color = visibility_data->background_color;
-      object->components[component] = &visibility_component;
+      object->components[component] = visibility_component;
     }
   else
     assert (1 == 0);

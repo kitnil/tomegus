@@ -66,7 +66,6 @@ main ()
   if (SDL_RenderSetLogicalSize (renderer, SCREEN_WIDTH, SCREEN_HEIGHT) < 0)
     SDL_Log ("SDL_RenderSetLogicalSize failed: %s\n", SDL_GetError ());
 
-  /* TODO: SIGSEGV: SDL_TEXTUREACCESS_TARGET */
   SDL_Texture *screen = SDL_CreateTexture (renderer, SDL_PIXELFORMAT_RGBA8888,
                                            SDL_TEXTUREACCESS_STREAMING,
                                            SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -78,17 +77,17 @@ main ()
 
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
 
-  game_object *player = create_game_object ();
-  position player_position = {player->id, 25, 25};
-  add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
-  visibility player_visibility = {player->id, '@', 0x00ff00ff, 0x000000ff};
-  add_component_to_game_object (player, COMPONENT_VISIBILITY, &player_visibility);
-
   game_object *wall = create_game_object ();
   position wall_position = {wall->id, 30, 25};
   add_component_to_game_object (wall, COMPONENT_POSITION, &wall_position);
   visibility wall_visibility = {wall->id, '#', 0xffffffff, 0x000000ff};
   add_component_to_game_object (wall, COMPONENT_VISIBILITY, &wall_visibility);
+
+  game_object *player = create_game_object ();
+  position player_position = {player->id, 25, 25};
+  add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
+  visibility player_visibility = {player->id, '@', 0xffff00ff, 0x000000ff};
+  add_component_to_game_object (player, COMPONENT_VISIBILITY, &player_visibility);
 
   /* Main loop. */
   while (!gameover)
@@ -133,7 +132,6 @@ main ()
                 }
             }
         }
-
       render_screen (renderer, screen, console);
     }
 
