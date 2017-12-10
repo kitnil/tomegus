@@ -7,6 +7,7 @@
 
 #include "game.h"
 
+/* Initialize world. */
 void
 init_world ()
 {
@@ -32,7 +33,7 @@ create_game_object ()
         break;
       }
 
-  assert (go != NULL);
+  assert (go != NULL);              /* Have we run out of game objects? */
 
   for (uint32_t i = 0; i < COMPONENT_COUNT; i++)
     go->components[i] = NULL;

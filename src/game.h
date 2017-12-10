@@ -2,8 +2,8 @@
 #define GAME_H
 
 #define MAX_COMPONENT_COUNT 100
-#define MAX_GO 1000
-#define UNUSED 1000
+#define MAX_GO 10000
+#define UNUSED 100000
 
 typedef enum
 {

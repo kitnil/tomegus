@@ -1,9 +1,11 @@
+#include <time.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
 
-#include "game.h"
 #include "pt_console.h"
+#include "game.h"
+#include "level.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -64,6 +66,8 @@ main ()
   const char* PROJECT_NAME = "Tomegus";
   bool gameover = false;
 
+  srand ((unsigned) time (NULL));
+
   if (SDL_Init (SDL_INIT_VIDEO) < 0)
     {
       SDL_LogError (SDL_LOG_CATEGORY_APPLICATION,
@@ -102,13 +106,11 @@ main ()
 
   init_world ();
 
-  game_object *wall = create_game_object ();
-  position wall_position = {wall->id, 30, 25};
-  add_component_to_game_object (wall, COMPONENT_POSITION, &wall_position);
-  visibility wall_visibility = {wall->id, '#', 0xffffffff, 0x000000ff};
-  add_component_to_game_object (wall, COMPONENT_VISIBILITY, &wall_visibility);
-  physical wall_physic = {wall->id, true, true};
-  add_component_to_game_object (wall, COMPONENT_PHYSICAL, &wall_physic);
+  init_level ();
+  for (uint32_t x = 0; x < LEVEL_WIDTH; x++)
+    for (uint32_t y = 0; y < LEVEL_HEIGHT; y++)
+      if (level_cells[x][y] == true)
+        add_wall (x, y);
 
   game_object *player = create_game_object ();
   position player_position = {player->id, 25, 25};
