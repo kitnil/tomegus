@@ -35,6 +35,29 @@ render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
   SDL_RenderPresent (renderer);
 }
 
+bool
+can_move (position next_position)
+{
+  bool allow_move = true;
+
+  if ((next_position.x >= 0)
+      && (next_position.x < NUM_COLS)
+      && (next_position.y < NUM_ROWS))
+    for (uint32_t i = 1; i < MAX_GO; i++)
+      {
+        position new_position = position_components[i];
+        if ((new_position.object_id > 0)
+            && (new_position.x == next_position.x)
+            && (new_position.y == next_position.y))
+          if (physical_components[i].block_movement == true)
+            allow_move = false;
+      }
+  else
+    allow_move = false;
+
+  return allow_move;
+}
+
 int
 main ()
 {
@@ -82,12 +105,16 @@ main ()
   add_component_to_game_object (wall, COMPONENT_POSITION, &wall_position);
   visibility wall_visibility = {wall->id, '#', 0xffffffff, 0x000000ff};
   add_component_to_game_object (wall, COMPONENT_VISIBILITY, &wall_visibility);
+  physical wall_physic = {wall->id, true, true};
+  add_component_to_game_object (wall, COMPONENT_PHYSICAL, &wall_physic);
 
   game_object *player = create_game_object ();
   position player_position = {player->id, 25, 25};
   add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
   visibility player_visibility = {player->id, '@', 0xffff00ff, 0x000000ff};
   add_component_to_game_object (player, COMPONENT_VISIBILITY, &player_visibility);
+  physical player_physic = {player->id, true, true};
+  add_component_to_game_object (player, COMPONENT_PHYSICAL, &player_physic);
 
   /* Main loop. */
   while (!gameover)
@@ -108,21 +135,41 @@ main ()
                 get_component_for_game_object (player, COMPONENT_POSITION);
               switch (key)
                 {
-                case SDLK_UP:
-                  if (player_position->y > 0)
-                    player_position->y -= 1;
+                case SDLK_UP:;
+                  position up = {player_position->object_id,
+                                 player_position->x,
+                                 player_position->y - 1};
+                  if (can_move (up))
+                    add_component_to_game_object (player,
+                                                  COMPONENT_POSITION,
+                                                  &up);
                   break;
-                case SDLK_DOWN:
-                  if (player_position->y < NUM_ROWS - 1)
-                    player_position->y += 1;
+                case SDLK_DOWN:;
+                  position down = {player_position->object_id,
+                                   player_position->x,
+                                   player_position->y + 1};
+                  if (can_move (down))
+                    add_component_to_game_object (player,
+                                                  COMPONENT_POSITION,
+                                                  &down);
                   break;
-                case SDLK_LEFT:
-                  if (player_position->x > 0)
-                    player_position->x -= 1;
+                case SDLK_LEFT:;
+                  position left = {player_position->object_id,
+                                   player_position->x - 1,
+                                   player_position->y};
+                  if (can_move (left))
+                    add_component_to_game_object (player,
+                                                  COMPONENT_POSITION,
+                                                  &left);
                   break;
-                case SDLK_RIGHT:
-                  if (player_position->x < NUM_COLS - 1)
-                    player_position->x += 1;
+                case SDLK_RIGHT:;
+                  position right = {player_position->object_id,
+                                    player_position->x + 1,
+                                    player_position->y};
+                  if (can_move (right))
+                    add_component_to_game_object (player,
+                                                  COMPONENT_POSITION,
+                                                  &right);
                   break;
                 case SDLK_ESCAPE:
                   gameover = true;

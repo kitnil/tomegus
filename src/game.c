@@ -55,6 +55,15 @@ add_component_to_game_object (game_object *object,
       visibility_component->background_color = visibility_data->background_color;
       object->components[component] = visibility_component;
     }
+  else if (component == COMPONENT_PHYSICAL)
+    {
+      physical *physical_component = &physical_components[object->id];
+      physical *physical_data = (physical *) component_data;
+      physical_component->object_id = object->id;
+      physical_component->block_sight = physical_data->block_sight;
+      physical_component->block_movement = physical_data->block_movement;
+      object->components[component] = physical_component;
+    }
   else
     assert (1 == 0);
 }
@@ -65,6 +74,7 @@ destroy_game_object (game_object *object)
 {
   position_components[object->id].object_id = 0;
   visibility_components[object->id].object_id = 0;
+  physical_components[object->id].object_id = 0;
   object->id = 0;
 }
 

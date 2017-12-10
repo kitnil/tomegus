@@ -55,5 +55,6 @@ void *get_component_for_game_object (game_object *object,
 visibility visibility_components[MAX_GO];
 position position_components[MAX_GO];
 game_object game_objects[MAX_GO];
+physical physical_components[MAX_GO];
 
 #endif
