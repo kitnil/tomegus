@@ -6,6 +6,9 @@
 
 #define LEVEL_WIDTH 80
 #define LEVEL_HEIGHT 40
+#define VISIBLE 0
+
+uint32_t level_fov[LEVEL_WIDTH][LEVEL_HEIGHT];
 
 bool level_cells[LEVEL_WIDTH][LEVEL_HEIGHT];
 
