@@ -5,6 +5,15 @@
 #include "level.h"
 #include "game.h"
 
+point
+rectangle_random_point (PT_Rect rectangle)
+{
+  uint32_t point_x = (rand () % rectangle.w) + rectangle.x;
+  uint32_t point_y = (rand () % rectangle.h) + rectangle.y;
+  point pair = {point_x, point_y};
+  return pair;
+}
+
 /* Determine if all cells within the given rectangle are filled. */
 bool
 carve_level_room (uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -20,6 +29,46 @@ carve_level_room (uint32_t x, uint32_t y, uint32_t width, uint32_t height)
       level_cells[i][j] = false;
 
   return true;
+}
+
+void
+carve_level_room_hallway_horizontal (point from, point to)
+{
+  uint32_t first, last;
+
+  if (from.x < to.x)
+    {
+      first = from.x;
+      last = to.x;
+    }
+  else
+    {
+      first = to.x;
+      last = from.x;
+    }
+
+  for (uint32_t x = first; x <= last; x++)
+    level_cells[x][from.y] = false;
+}
+
+void
+carve_level_room_hallway_vertical (point from, point to)
+{
+  uint32_t first, last;
+
+  if (from.y < to.y)
+    {
+      first = from.y;
+      last = to.y;
+    }
+  else
+    {
+      first = to.y;
+      last = from.y;
+    }
+
+  for (uint32_t y = first; y <= last; y++)
+    level_cells[from.x][y] = false;
 }
 
 /* Mark all level cells as `filled'. */
@@ -71,7 +120,32 @@ init_level ()
 
   /* TODO: Join all rooms with corridors, so that all rooms are
      reachable. */
+  for (uint32_t r = 1; r < room_count; r++)
+    {
+      PT_Rect from = level_rooms[r - 1];
+      PT_Rect to = level_rooms[r];
 
+      /* Join two rooms via random points. */
+      point from_point = rectangle_random_point (from);
+      point to_point = rectangle_random_point (to);
+      point middle_point_horizontal = {to_point.x, from_point.y};
+      point middle_point_vertical = {from_point.x, to_point.y};
+
+      /* TODO: Make even number function. */
+      /* Move horizontal then vertical else vertical then horizontal. */
+      if (rand () % 2 == 0)
+        {
+          carve_level_room_hallway_horizontal (from_point,
+                                               middle_point_horizontal);
+          carve_level_room_hallway_vertical (middle_point_horizontal,
+                                             to_point);
+        }
+      else
+        {
+          carve_level_room_hallway_vertical (from_point, middle_point_vertical);
+          carve_level_room_hallway_horizontal (middle_point_vertical, to_point);
+        }
+    }
 }
 
 void

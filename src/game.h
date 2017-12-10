@@ -44,6 +44,11 @@ typedef struct
   bool block_sight;
 } physical;
 
+typedef struct
+{
+  uint32_t x, y;
+} point;
+
 game_object *create_game_object ();
 
 void add_component_to_game_object (game_object *object,
