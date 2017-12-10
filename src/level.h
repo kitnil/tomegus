@@ -9,6 +9,7 @@
 bool level_cells[LEVEL_WIDTH][LEVEL_HEIGHT];
 
 void init_level ();
+void init_player ();
 void add_wall (uint8_t x, uint8_t y);
 
 #endif

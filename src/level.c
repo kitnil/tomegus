@@ -71,6 +71,25 @@ carve_level_room_hallway_vertical (point from, point to)
     level_cells[from.x][y] = false;
 }
 
+/* Create a player in the level. */
+void
+init_player (game_object *player)
+{
+  for (;;)
+    {
+      uint32_t x = rand () % LEVEL_WIDTH;
+      uint32_t y = rand () % LEVEL_HEIGHT;
+
+      if (level_cells[x][y] == false)
+        {
+          position player_position = {player->id, 25, 25};
+          add_component_to_game_object (player, COMPONENT_POSITION,
+                                        &player_position);
+          break;
+        }
+    }
+}
+
 /* Mark all level cells as `filled'. */
 void
 init_level ()
@@ -146,6 +165,14 @@ init_level ()
           carve_level_room_hallway_horizontal (middle_point_vertical, to_point);
         }
     }
+
+  /* TODO: Move to function: Generate a level. */
+  for (uint32_t x = 0; x < LEVEL_WIDTH; x++)
+    for (uint32_t y = 0; y < LEVEL_HEIGHT; y++)
+      if (level_cells[x][y] == true)
+        add_wall (x, y);
+
+  /* TODO: Move to function: Place a player. */
 }
 
 void

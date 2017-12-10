@@ -105,20 +105,14 @@ main ()
   PT_ConsoleSetBitmapFont (console, "terminal16x16.png", 0, 16, 16);
 
   init_world ();
-
   init_level ();
-  for (uint32_t x = 0; x < LEVEL_WIDTH; x++)
-    for (uint32_t y = 0; y < LEVEL_HEIGHT; y++)
-      if (level_cells[x][y] == true)
-        add_wall (x, y);
-
+  
   game_object *player = create_game_object ();
-  position player_position = {player->id, 25, 25};
-  add_component_to_game_object (player, COMPONENT_POSITION, &player_position);
   visibility player_visibility = {player->id, '@', 0xffff00ff, 0x000000ff};
   add_component_to_game_object (player, COMPONENT_VISIBILITY, &player_visibility);
   physical player_physic = {player->id, true, true};
   add_component_to_game_object (player, COMPONENT_PHYSICAL, &player_physic);
+  init_player ();
 
   /* Main loop. */
   while (!gameover)
