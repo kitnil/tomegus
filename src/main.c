@@ -6,6 +6,7 @@
 #include "pt_console.h"
 #include "game.h"
 #include "level.h"
+#include "fov.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -24,10 +25,11 @@ render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
         position *object_position = (position *)
           get_component_for_game_object (&game_objects[i], COMPONENT_POSITION);
 
-        PT_ConsolePutCharAt (console, visibility_components[i].glyph,
-                             object_position->x, object_position->y,
-                             visibility_components[i].foreground_color,
-                             visibility_components[i].background_color);
+        if (level_fov[object_position->x][object_position->y] > 0)
+          PT_ConsolePutCharAt (console, visibility_components[i].glyph,
+                               object_position->x, object_position->y,
+                               visibility_components[i].foreground_color,
+                               visibility_components[i].background_color);
       }
 
   SDL_UpdateTexture (screen, NULL, console->pixels,
@@ -61,10 +63,11 @@ can_move (position next_position)
 }
 
 int
-main ()
+main (int argc, char *argv[])
 {
   const char* PROJECT_NAME = "Tomegus";
   bool gameover = false;
+  bool recalc_fov = false;
 
   srand ((unsigned) time (NULL));
 
@@ -114,8 +117,13 @@ main ()
   add_component_to_game_object (player, COMPONENT_PHYSICAL, &player_physic);
   init_player ();
 
+  position *player_position = (position *)
+    get_component_for_game_object (player, COMPONENT_POSITION);
+
+  calc_fov (player_position->x, player_position->y, level_fov);
+
   /* Main loop. */
-  while (!gameover)
+  while (! gameover)
     {
       /* Event handling. */
       SDL_Event event;
@@ -129,58 +137,82 @@ main ()
           if (event.type == SDL_KEYDOWN)
             {
               SDL_Keycode key = event.key.keysym.sym;
-              position *player_position = (position *)
-                get_component_for_game_object (player, COMPONENT_POSITION);
               switch (key)
                 {
                 case SDLK_r:
                   clean_level (player);
                   init_level ();
                   break;
+
                 case SDLK_UP:;
                   position up = {player_position->object_id,
                                  player_position->x,
                                  player_position->y - 1};
                   if (can_move (up))
-                    add_component_to_game_object (player,
-                                                  COMPONENT_POSITION,
-                                                  &up);
+                    {
+                      add_component_to_game_object (player,
+                                                    COMPONENT_POSITION,
+                                                    &up);
+                      recalc_fov = true;
+                    }
                   break;
+
                 case SDLK_DOWN:;
                   position down = {player_position->object_id,
                                    player_position->x,
                                    player_position->y + 1};
                   if (can_move (down))
-                    add_component_to_game_object (player,
-                                                  COMPONENT_POSITION,
-                                                  &down);
+                    {
+                      add_component_to_game_object (player,
+                                                    COMPONENT_POSITION,
+                                                    &down);
+                      recalc_fov = true;
+                    }
                   break;
+
                 case SDLK_LEFT:;
                   position left = {player_position->object_id,
                                    player_position->x - 1,
                                    player_position->y};
                   if (can_move (left))
-                    add_component_to_game_object (player,
+                    {
+                      add_component_to_game_object (player,
                                                   COMPONENT_POSITION,
                                                   &left);
+                      recalc_fov = true;
+                    }
                   break;
+
                 case SDLK_RIGHT:;
                   position right = {player_position->object_id,
                                     player_position->x + 1,
                                     player_position->y};
                   if (can_move (right))
-                    add_component_to_game_object (player,
+                    {
+                      add_component_to_game_object (player,
                                                   COMPONENT_POSITION,
                                                   &right);
+                      recalc_fov = true;
+                    }
                   break;
+
                 case SDLK_ESCAPE:
                   gameover = true;
                   break;
+
                 default:
                   break;
                 }
             }
         }
+      if (recalc_fov)
+        {
+          position *player_position = (position *)
+            get_component_for_game_object (player, COMPONENT_POSITION);
+          calc_fov (player_position->x, player_position->y, level_fov);
+          recalc_fov = false;
+        }
+
       render_screen (renderer, screen, console);
     }
 
