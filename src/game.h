@@ -65,4 +65,5 @@ physical physical_components[MAX_GO];
 
 void init_world ();
 
+void destroy_game_object (game_object *object);
 #endif

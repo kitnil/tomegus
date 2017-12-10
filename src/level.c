@@ -90,6 +90,16 @@ init_player (game_object *player)
     }
 }
 
+/* Clean all except the player. */
+void
+clean_level (game_object *player)
+{
+  for (uint32_t i = 0; i < MAX_GO; i++)
+    if ((game_objects[i].id != player->id)
+        && (game_objects[i].id != UNUSED))
+      destroy_game_object (&game_objects[i]);
+}
+
 /* Mark all level cells as `filled'. */
 void
 init_level ()

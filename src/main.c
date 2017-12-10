@@ -133,6 +133,10 @@ main ()
                 get_component_for_game_object (player, COMPONENT_POSITION);
               switch (key)
                 {
+                case SDLK_r:
+                  clean_level (player);
+                  init_level ();
+                  break;
                 case SDLK_UP:;
                   position up = {player_position->object_id,
                                  player_position->x,
