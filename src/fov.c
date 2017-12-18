@@ -2,31 +2,53 @@
 #include "level.h"
 #include "fov.h"
 
+float
+pifagor (uint32_t x_1, uint32_t x_2, uint32_t y_1, uint32_t y_2)
+{
+  return sqrt (pow (x_2 - x_1, 2) + pow (y_2 - y_1, 2));
+}
+
 void
 calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
 {
-  /* Reset FOV to default state (hidden). */
-  for (uint32_t x = 0; x < LEVEL_WIDTH; x++)
-    for (uint32_t y = 0; y < LEVEL_HEIGHT; y++)
-      level_fov[x][y] = 0;
+  bool previous_block = false;
+  float start = 0.0;
+  float end = 0.0;
+  shadow know_shadows[10];
+  uint32_t count = 0;
 
-  /* Cast visibility out in four directions.
-     Determine visibility rectangle. */
-  uint32_t x_1 = 0; 
-  if (x >= FOV_DISTANCE)
-    x_1 = x - FOV_DISTANCE; 
+  for (int cell_y = 1; cell_y < FOV_DISTANCE; cell_y++)
+    {
+      previous_block = false;
 
-  uint32_t x_2 = x + FOV_DISTANCE;
-  if (x_2 >= LEVEL_WIDTH)
-    x_2 = LEVEL_WIDTH - 1;
+      for (int cell_x; cell_x <= distance + 1; cell_x++)
+        {
+          /* Cell within view distance. */
+          if (pifagor (x, y, cell_x, cell_y) <= FOV_DISTANCE)
+            if (! shadow (cell_x, cell_y))
+              {
+                mark_visible (cell_x, cell_y);
+                if (block (cell_x, cell_y))
+                  if (! previous_block)
+                    start = slope (x, y, cell_x - 0.5, cell_y);
+                  else
+                    if (previous_block)
+                      {
+                        end = slope (x, y, cell_x + 0.5, cell_y);
+                        shadow new_shadow = {start, end};
+                        add_shadow (new_shadow);
+                      }
+              }
+          /* Cell within known shadow. */
+        }
 
-  uint32_t y_1 = 0;
-  if (y >= FOV_DISTANCE)
-    y_1 = y - FOV_DISTANCE;
-
-  uint32_t y_2 = y + FOV_DISTANCE;
-  if (y_2 >= LEVEL_HEIGHT)
-    y_2 = LEVEL_HEIGHT - 1;
+      if (previous_block)
+        {
+          end = slope (x, y, cell_x + 0.5, cell_y);
+          shadow new_shadow = {start, end};
+          add_shadow (new_shadow);
+        }
+    }
 
   /* TODO: Move to function: Apply visibility to level_fov. */
   for (uint32_t f_x = x_1; f_x <= x_2; f_x++)
