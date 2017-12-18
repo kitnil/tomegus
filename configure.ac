@@ -19,6 +19,9 @@ AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 AM_CFLAGS="$AM_CFLAGS $SDL_CFLAGS"
 AM_LDFLAGS="$AM_LDFLAGS $SDL_LIBS"
 
+# Check for Guile
+PKG_CHECK_MODULES([GUILE], [guile-2.2])
+
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.

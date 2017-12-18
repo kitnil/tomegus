@@ -34,6 +34,7 @@
              (guix build-system gnu)
              (gnu packages)
              (gnu packages autotools)
+             (gnu packages guile)
              (gnu packages pkg-config)
              (gnu packages sdl)
              (wigust packages games))
@@ -79,7 +80,8 @@
      ("automake" ,automake)
      ("pkg-config" ,pkg-config)))
   (inputs
-   `(("sdl", sdl2)
+   `(("guile" ,guile-2.2.3)
+     ("sdl", sdl2)
      ("sdl-image" ,sdl2-image)
      ("stb" ,stb)))
   (synopsis "Rogue like game")

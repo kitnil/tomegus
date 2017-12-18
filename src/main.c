@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
+#include <libguile.h>
 
 #include "pt_console.h"
 #include "game.h"
@@ -75,11 +76,26 @@ can_move (position next_position)
 }
 
 int
-main (int argc, char *argv[])
+main (int argc, char **argv)
 {
   const char* PROJECT_NAME = "Tomegus";
   bool gameover = false;
   bool recalc_fov = false;
+
+  /* http://www.lonelycactus.com/guilebook/x220.html */
+  SCM func_symbol;
+  SCM func;
+
+  scm_init_guile ();
+
+  scm_c_primitive_load ("script.scm");
+
+  func_symbol = scm_c_lookup ("do-hello");
+  func = scm_variable_ref (func_symbol);
+
+  scm_call_0 (func);
+
+  exit (EXIT_SUCCESS);
 
   srand ((unsigned) time (NULL));
 
@@ -232,6 +248,4 @@ main (int argc, char *argv[])
   SDL_DestroyRenderer (renderer);
   SDL_DestroyWindow (window);
   atexit (SDL_Quit);
-
-  return 0;
 }
