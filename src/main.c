@@ -26,10 +26,22 @@ render_screen (SDL_Renderer *renderer, SDL_Texture *screen, PT_Console *console)
           get_component_for_game_object (&game_objects[i], COMPONENT_POSITION);
 
         if (level_fov[object_position->x][object_position->y] > 0)
-          PT_ConsolePutCharAt (console, visibility_components[i].glyph,
-                               object_position->x, object_position->y,
-                               visibility_components[i].foreground_color,
-                               visibility_components[i].background_color);
+          {
+            visibility_components[i].seen = true;
+            PT_ConsolePutCharAt (console, visibility_components[i].glyph,
+                                 object_position->x, object_position->y,
+                                 visibility_components[i].foreground_color,
+                                 visibility_components[i].background_color);
+          }
+        else if (visibility_components[i].seen)
+          {
+            uint32_t color_full = visibility_components[i].foreground_color;
+            uint32_t color_faded = COLOR_FROM_RGBA
+              (RED (color_full), GREEN (color_full), BLUE (color_full), 0x77);
+            PT_ConsolePutCharAt (console, visibility_components[i].glyph,
+                                 object_position->x, object_position->y,
+                                 color_faded, 0x000000ff);
+          }
       }
 
   SDL_UpdateTexture (screen, NULL, console->pixels,

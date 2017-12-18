@@ -35,7 +35,7 @@ typedef struct
   unsigned char glyph;
   uint32_t foreground_color;
   uint32_t background_color;
-  uint32_t fov;
+  uint32_t seen;
 } visibility;
 
 typedef struct
