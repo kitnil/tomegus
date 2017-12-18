@@ -82,21 +82,6 @@ main (int argc, char **argv)
   bool gameover = false;
   bool recalc_fov = false;
 
-  /* http://www.lonelycactus.com/guilebook/x220.html */
-  SCM func_symbol;
-  SCM func;
-
-  scm_init_guile ();
-
-  scm_c_primitive_load ("script.scm");
-
-  func_symbol = scm_c_lookup ("do-hello");
-  func = scm_variable_ref (func_symbol);
-
-  scm_call_0 (func);
-
-  exit (EXIT_SUCCESS);
-
   srand ((unsigned) time (NULL));
 
   if (SDL_Init (SDL_INIT_VIDEO) < 0)
