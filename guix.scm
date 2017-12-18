@@ -39,29 +39,6 @@
              (gnu packages sdl)
              (wigust packages games))
 
-(define-syntax-rule (define-packages-zeroptimization (var-name pkg) ...)
-  (begin
-    (define-public var-name
-      (package
-        (inherit pkg)
-        (name (string-append (package-name pkg) "-zeroptimization"))
-        (arguments
-         (cons* #:configure-flags '("CFLAGS=-ggdb"
-                                    "-O0"
-                                    ;; Guix flags.
-                                    "--disable-alsa-shared"
-                                    "--disable-pulseaudio-shared"
-                                    "--disable-x11-shared"
-                                    "LDFLAGS=-lGL")
-                (package-arguments pkg)))))
-    ...))
-
-(define-packages-zeroptimization
-  (sdl2-zeroptimization sdl2)
-  (sdl2-image-zeroptimization sdl2-image)
-  (sdl2-mixer-zeroptimization sdl2-mixer)
-  (sdl2-ttf-zeroptimization sdl2-ttf))
-
 (package
   (name "tomegus")
   (version "0.1")
