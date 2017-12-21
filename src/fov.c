@@ -1,7 +1,18 @@
 #include <stdint.h>
 #include <libguile.h>
+#include <inttypes.h>
 #include "level.h"
 #include "fov.h"
+
+void
+scm_fov (SCM x, SCM y, SCM value)
+{
+  printf ("%p ", &level_fov[scm_to_uint32 (x)][scm_to_uint32 (y)]);
+  printf ("%" PRIu32 " ", scm_to_uint32 (x));
+  printf ("%" PRIu32 "\n", scm_to_uint32 (y));
+  
+  level_fov[scm_to_uint32 (x)][scm_to_uint32 (y)] = scm_to_uint32 (value);
+}
 
 void
 calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
@@ -10,6 +21,8 @@ calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
   scm_init_guile ();
 
   scm_c_primitive_load ("script.scm");
+
+  scm_c_define_gsubr ("fov", 3, 0, 0, (SCM (*)()) scm_fov);
 
   /* TODO: return (EXIT_SUCCESS); */
 
@@ -20,6 +33,7 @@ calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
 
   /* Cast visibility out in four directions.
      Determine visibility rectangle. */
+
   uint32_t x_1 = scm_to_uint32
     (scm_call_2 (scm_variable_ref (scm_c_lookup ("left")),
                  scm_from_int (x),
@@ -40,8 +54,21 @@ calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
                  scm_from_uint32 (y + FOV_DISTANCE),
                  scm_from_int (LEVEL_HEIGHT)));
 
+  /* uint32_t foobar = scm_to_uint32 */
+  /*   (scm_call_4 (scm_variable_ref (scm_c_lookup ("caca")), */
+  /*                scm_from_uint32 (x_1), scm_from_uint32 (x_2), */
+  /*                scm_from_uint32 (y_1), scm_from_uint32 (y_2))); */
+
   /* TODO: Move to function: Apply visibility to level_fov. */
-  for (uint32_t f_x = x_1; f_x <= x_2; f_x++)
-    for (uint32_t f_y = y_1; f_y <= y_2; f_y++)
-      level_fov[f_x][f_y] = 10;
+  /* for (uint32_t f_x = x_1; f_x <= x_2; f_x++) */
+  /*   for (uint32_t f_y = y_1; f_y <= y_2; f_y++) */
+  /*     { */
+  /*       printf ("x: %" PRIu32, f_x); */
+  /*       printf (", y: %" PRIu32 "\n", f_y); */
+  /*       level_fov[f_x][f_y] = 10; */
+  /*     } */
+
+  scm_call_4 (scm_variable_ref (scm_c_lookup ("caca")),
+              scm_from_uint32 (x_1), scm_from_uint32 (x_2),
+              scm_from_uint32 (y_1), scm_from_uint32 (y_2));
 }
