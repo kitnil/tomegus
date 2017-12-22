@@ -97,3 +97,19 @@ get_component_for_game_object (game_object *object,
 {
   return object->components[component];
 }
+
+game_object *
+object_position (uint32_t x, uint32_t y)
+{
+  for (uint32_t i = 0; i < MAX_GO; i++)
+    {
+      position new_position = position_components[i];
+
+      if (new_position.object_id != UNUSED
+          && new_position.x == x
+          && new_position.y == y)
+        return &game_objects[i];
+    }
+
+  return NULL;
+}
