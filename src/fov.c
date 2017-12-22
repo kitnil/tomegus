@@ -3,6 +3,7 @@
 #include "fov.h"
 #include <assert.h>
 #include <stddef.h>
+#include <math.h>
 
 shadow known_shadows[10];
 uint32_t shadow_count = 0;
@@ -67,6 +68,12 @@ cell_block (uint32_t x, uint32_t y)
     }
 
   return false;
+}
+
+float
+fov_distance (uint32_t x_1, uint32_t y_1, uint32_t x_2, uint32_t y_2)
+{
+  return sqrt (pow (x_2 - x_1, 2) + pow (y_2 - y_1, 2));
 }
 
 fov_cell
@@ -145,18 +152,22 @@ calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
     for (uint32_t y = 0; y < LEVEL_HEIGHT; y++)
       level_fov[x][y] = 0;
 
+  /* TODO: Make player visible. */
   level_fov[x][y] = 1;
 
+  /* TODO: Loop through 8 sectors around the player. */
   for (uint32_t sector = 1; sector <= 8; sector++)
     {
       bool previous_block = false;
       float start = 0.0;
       float end = 0.0;
 
+      /* TODO: For each distance from 1 to FOV range */
       for (int cell_y = 1; cell_y < FOV_DISTANCE; cell_y++)
         {
           previous_block = false;
 
+          /* TODO: For each cell in the span. */
           for (int cell_x = 0; cell_x <= cell_y + 1; cell_x++)
             {
               fov_cell player_cell = {x, y};
@@ -164,34 +175,41 @@ calc_fov (uint32_t x, uint32_t y, uint32_t level_fov[][LEVEL_HEIGHT])
               fov_cell level_cell = local_cell (sector,
                                                 player_cell, translate_cell);
 
+              /* TODO: Is cell within level? */
               if ((level_cell.x >= 0)
                   && (level_cell.x < LEVEL_WIDTH)
                   && (level_cell.y < LEVEL_HEIGHT))
-                {
-                  float cell_slope = slope_between (0, 0, cell_x, cell_y);
+                if (fov_distance (0, 0, cell_x, cell_y) <= FOV_DISTANCE)
+                  {
+                    /* TODO: Maybe infinite. */
+                    float cell_slope = slope_between (0, 0, cell_x, cell_y);
 
-                  if (! shadow_cell (cell_slope))
-                    {
-                      level_fov[level_cell.x][level_cell.y] = 1;
+                    if (! shadow_cell (cell_slope))
+                      {
+                        level_fov[level_cell.x][level_cell.y] = 1;
 
-                      if (cell_block (level_cell.x, level_cell.y))
-                        if (previous_block == false)
+                        if ((cell_block (level_cell.x, level_cell.y))
+                            && previous_block == false)
                           start = slope_between (0, 0, cell_x - 0.5, cell_y);
-                    }
-                  else if (previous_block)
-                    {
-                      end = slope_between (0, 0, cell_x + 0.5, cell_y);
+                      }
+                    else if (previous_block)
+                      {
+                        end = slope_between (0, 0, cell_x + 0.5, cell_y);
 
-                      shadow new_shadow = {start, end};
+                        shadow new_shadow = {start, end};
 
-                      add_shadow (new_shadow);
-                    }
-                }
+                        add_shadow (new_shadow);
+                      }
+                  }
             }
+
+          /* TODO: Have an open shadow */
           if (previous_block)
             {
+              /* TODO: Calc and add shadow to the list before next span. */
               end = slope_between (0, 0, cell_y + 1 + 0.5, cell_y);
 
+              /* TODO: Add shadow list. */
               shadow new_shadow = {start, end};
 
               add_shadow (new_shadow);
