@@ -1,6 +1,8 @@
 * Development environment
 
-  autoreconf -vfi
+guix environment --root=guix-tomegus --pure --load=guix.scm --ad-hoc strace gdb coreutils findutils grep
+autoreconf -vfi
+./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"
 
 #+BEGIN_SRC shell
   guix environment --pure --load=guix.scm -- ./configure LIBS="-lm"
@@ -8,7 +10,6 @@
 #+END_SRC
 
 set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include
-./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"
 
 #+BEGIN_SRC emacs-lisp
   (local-set-key "<f5>" #'wi-compile)
@@ -19,3 +20,4 @@ set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include
     (insert "make")
     (comint-send-input))
 #+END_SRC
+

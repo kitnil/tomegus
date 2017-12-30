@@ -34,32 +34,10 @@
              (guix build-system gnu)
              (gnu packages)
              (gnu packages autotools)
+             (gnu packages check)
              (gnu packages pkg-config)
              (gnu packages sdl)
              (wigust packages games))
-
-(define-syntax-rule (define-packages-zeroptimization (var-name pkg) ...)
-  (begin
-    (define-public var-name
-      (package
-        (inherit pkg)
-        (name (string-append (package-name pkg) "-zeroptimization"))
-        (arguments
-         (cons* #:configure-flags '("CFLAGS=-ggdb"
-                                    "-O0"
-                                    ;; Guix flags.
-                                    "--disable-alsa-shared"
-                                    "--disable-pulseaudio-shared"
-                                    "--disable-x11-shared"
-                                    "LDFLAGS=-lGL")
-                (package-arguments pkg)))))
-    ...))
-
-(define-packages-zeroptimization
-  (sdl2-zeroptimization sdl2)
-  (sdl2-image-zeroptimization sdl2-image)
-  (sdl2-mixer-zeroptimization sdl2-mixer)
-  (sdl2-ttf-zeroptimization sdl2-ttf))
 
 (package
   (name "tomegus")
@@ -77,10 +55,11 @@
    `(("autoconf" ,autoconf)
      ("autoconf-archive" ,autoconf-archive)
      ("automake" ,automake)
+     ("check" ,check-0.11.0)
+     ("libtool" ,libtool)
      ("pkg-config" ,pkg-config)))
   (inputs
-   `(("sdl", sdl2)
-     ("sdl-image" ,sdl2-image)
+   `(("sdl-union" ,(sdl-union (list sdl2 sdl2-image)))
      ("stb" ,stb)))
   (synopsis "Rogue like game")
   (description "Rogue like game.")
