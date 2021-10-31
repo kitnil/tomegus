@@ -1,15 +1,40 @@
-* Development environment
+-*- mode: org -*-
 
-guix environment --root=guix-tomegus --pure --load=guix.scm --ad-hoc strace gdb coreutils findutils grep
-autoreconf -vfi
-./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"
+Tomegus is a simple rogue-like game written following [[https://www.youtube.com/playlist?list=PLnjvY7knqLad8seP1ZIMQZ354buAmXMax][Coding a Classic
+Roguelike in C - YouTube]] series.
+
+[[https://user-images.githubusercontent.com/7709598/139604680-d08c801d-8a08-4ccc-bb3c-4fe5c4bf54e5.gif]]
+
+* Build
+
+#+begin_src sh
+  guix time-machine --channels=channels.scm \
+       -- shell --development --file=guix.scm \
+       -- sh -c 'set -e; autoreconf -vfi; ./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"; make'
+#+end_src
+
+* Run
+
+#+begin_src sh
+  src/tomegus
+#+end_src
+
+* Development environment (deprecated 'guix environment')
+
+#+begin_src sh
+  guix environment --root=guix-tomegus --pure --load=guix.scm --ad-hoc strace gdb coreutils findutils grep
+  autoreconf -vfi
+  ./configure CFLAGS="-O0 -g -Wall -Werror" LIBS="-lm"
+#+end_src
 
 #+BEGIN_SRC shell
   guix environment --pure --load=guix.scm -- ./configure LIBS="-lm"
   guix environment --pure --load=guix.scm -- make
 #+END_SRC
 
-set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include
+#+begin_example
+  set environment C_INCLUDE_PATH=/home/natsu/src/tomegus/guix-tomegus/include
+#+end_example
 
 #+BEGIN_SRC emacs-lisp
   (local-set-key "<f5>" #'wi-compile)

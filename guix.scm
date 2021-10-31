@@ -1,5 +1,5 @@
 ;;; Tomegus --- Rogue like game
-;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2017, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of Tomegus.
 ;;;
@@ -37,7 +37,43 @@
              (gnu packages check)
              (gnu packages pkg-config)
              (gnu packages sdl)
-             (wigust packages games))
+             (guix build-system trivial)
+             ((guix licenses) #:prefix license:))
+
+(define stb
+  (let ((commit "9d9f75eb682dd98b34de08bb5c489c6c561c9fa6")
+        (revision "1"))
+    (package
+      (name "stb")
+      (version (string-append "0.0.1-" revision "."
+                              (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "git://github.com/nothings/stb.git")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32
+           "0q84bl6ai2mrcywrynvqvvlr6dpyafx33j3xaz6n38z5gi8lcmzx"))))
+      (build-system trivial-build-system)
+      (inputs `(("source" ,source)))
+      (arguments
+       `(#:modules
+         ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils))
+           (for-each (lambda (file)
+                       (install-file file (string-append %output
+                                                         "/include/stb")))
+                     (find-files (assoc-ref %build-inputs "source")
+                                 "\\.h$")))))
+      (home-page "https://github.com/nothings/stb")
+      (synopsis "stb single-file public domain libraries for C/C++")
+      (description "stb single-file public domain libraries for C/C++")
+      (license license:expat))))
 
 (package
   (name "tomegus")
@@ -55,7 +91,7 @@
    `(("autoconf" ,autoconf)
      ("autoconf-archive" ,autoconf-archive)
      ("automake" ,automake)
-     ("check" ,check-0.11.0)
+     ("check" ,check-0.12)
      ("libtool" ,libtool)
      ("pkg-config" ,pkg-config)))
   (inputs
